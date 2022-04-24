@@ -9,6 +9,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
+<img src="logo.png" height="100" alt="Sample photo">
     <h1>SMU Lichess Management System</h1>
     <p>This list is sorted from best going down, The best player is selected using the Blitz rating, as many serious games are played in blitz!</p>
   
@@ -35,6 +36,7 @@ $sql = "SELECT * FROM details";
 
 $result = $conn->query($sql);
 $users = [];
+$bestplayerinfo = "";
 if($result->num_rows>0){
     while($row = $result->fetch_assoc()) {
     array_push($users,$row);
@@ -42,7 +44,9 @@ if($result->num_rows>0){
     
 }
 $conn->close();
-
+$risk = [];
+$games = 0;
+$bestBlitz = 0;
 $ch = curl_init();
 foreach($users as $user){
     
@@ -54,10 +58,20 @@ curl_setopt($ch,CURLOPT_RETURNTRANSFER,true);
 $res = curl_exec($ch);
 
 
+
 $res = json_decode($res);
 $Blitz = $res->perfs->blitz->rating;
 $bullet = $res->perfs->bullet->rating;
 $rapid = $res->perfs->rapid->rating;
+if($Blitz <= 1400){
+    $riskplayer = $user['surname']." ".$user['name']." with a blitz rating of ".$Blitz;
+    array_push($risk,$riskplayer);
+}
+if($bestBlitz < $Blitz){
+$bestBlitz = $Blitz;
+$games = $res->perfs->blitz->games;
+$bestplayerinfo = $user['surname']." ".$user['name']." with a blitz rating of ".$Blitz." with ".$games." blitz games played.";
+}
 ?>
 
 
@@ -112,5 +126,19 @@ curl_close($ch);
       }
    
 </script>
+
+<h2>Best:</h2>
+
+<?php
+echo "<p>".$bestplayerinfo."</p>";
+if(!empty($risk)){
+    echo "<h2>Players who are in the critical area (blitz <= 1400):</h2>";
+
+foreach($risk as $r){
+    echo "<p>".$r."</p>";
+}
+}
+?>
+<a href = "https://lichess.org/team/team-smu" class = "btn btn-primary">Join SMU Team on Lichess</a>
 </body>
 </html>
