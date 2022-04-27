@@ -56,6 +56,7 @@ $games = 0;
 $bestBlitz = 0;
 $bestFemale = 0;
 $bestuserName ="";
+$bestFemaleuser = "";
 $ch = curl_init();
 foreach($users as $user){
     
@@ -80,7 +81,7 @@ if($user['section'] == "Female"){
   if($bestFemale < $Blitz){
   $bestFemale = $Blitz;
   $games = $res->perfs->blitz->games;
-
+  $bestFemaleuser = $user['username'];
   $femaleInfo = $user['surname']." ".$user['name']." with a blitz rating of ".$Blitz." and ".$games." blitz  games played."
   ?>
   
@@ -134,9 +135,11 @@ curl_close($ch);
          rows = filterTable.rows;
          for (i = 1; i < rows.length - 1; i++) {
             sortFlag = false;
-            x = rows[i].getElementsByTagName("TD")[2];
-            y = rows[i + 1].getElementsByTagName("TD")[2];
-            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+            x = rows[i].getElementsByTagName("TD")[2].innerHTML;
+            y = rows[i + 1].getElementsByTagName("TD")[2].innerHTML;
+            x = Number(x);
+            y = Number(y);
+            if (x < y) {
                sortFlag = true;
                break;
             }
@@ -156,7 +159,10 @@ curl_close($ch);
 
   
 <h2>The best female player is:</h2>
-<?php echo $femaleInfo."<br>";
+<p><?php echo $femaleInfo;?> you can also 
+ <a href = "https://lichess.org/@/<?php echo $bestFemaleuser;?>" class = "link-primary ">Challange</a> her if you want to personally remove her from the Throne.
+</p>
+<?php
 if(!empty($risk)){
   echo "<h2>Players who are in the critical area (blitz <= 1400):</h2>";
 
