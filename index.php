@@ -11,19 +11,21 @@
 </head>
 
 <body>
-<img src="logo.png" height="100" alt="Sample photo">
+<img src="logo.png" height="170" alt="Sample photo">
     <h1>SMU Lichess Rank</h1>
     <p>This list is sorted from best going down, The best player is selected using the Blitz rating, as many serious games are played in blitz!</p>
     <h2>Official Practice times</h2>
     <h3>Venue : Sports Comm</h3>
     <p>Thursday 16h30 - 18h00</p>
     <p>Friday 16h30 - 18h00</p>
+    <h1>Your rank will automatically change when your rating goes up or down</h1>
     <div class="table-responsive">
- <table class="table table-hover filterTable">
+ <table id ="table" class="table table-hover filterTable">
   <thead>
 
     <tr>
      
+    <th scope="col">Rank</th>
       <th scope="col">Surname</th>
       <th scope="col">Name</th>
       <th scope="col">Blitz</th>
@@ -101,6 +103,9 @@ if you want to Dethrone ".$user['name']." you can request a ";
    
    
   <tr>
+
+  <td>null</td>
+
 <td><?php echo $user['surname']; ?></td>
 <td><?php echo $user['name']; ?></td>
 <td><?php echo $Blitz; ?></td>
@@ -135,8 +140,8 @@ curl_close($ch);
          rows = filterTable.rows;
          for (i = 1; i < rows.length - 1; i++) {
             sortFlag = false;
-            x = rows[i].getElementsByTagName("TD")[2].innerHTML;
-            y = rows[i + 1].getElementsByTagName("TD")[2].innerHTML;
+            x = rows[i].getElementsByTagName("TD")[3].innerHTML;
+            y = rows[i + 1].getElementsByTagName("TD")[3].innerHTML;
             x = Number(x);
             y = Number(y);
             if (x < y) {
@@ -149,29 +154,32 @@ curl_close($ch);
             sorted = true;
          }
       }
-   
+
+      var myTable = document.getElementById('table');
+     var rows = myTable.rows;
+      for(i = 1 ;i<=rows.length;i++){
+      myTable.rows[i].cells[0].innerHTML = i;
+}
 </script>
 
 <h2>Best:</h2>
  <p><?php echo $bestplayerinfo;?> 
- <a href = "https://lichess.org/@/<?php echo $bestuserName;?>" class = "link-primary ">Challange</a>
+ <a href = "https://lichess.org/@/<?php echo $bestuserName;?>" class = "link-primary ">Challenge</a>
 </p>
 
   
 <h2>The best female player is:</h2>
 <p><?php echo $femaleInfo;?> you can also 
- <a href = "https://lichess.org/@/<?php echo $bestFemaleuser;?>" class = "link-primary ">Challange</a> her if you want to personally remove her from the Throne.
+ <a href = "https://lichess.org/@/<?php echo $bestFemaleuser;?>" class = "link-primary ">Challenge</a> her if you want to personally remove her from the Throne.
 </p>
-<?php
-if(!empty($risk)){
-  echo "<h2>Players who are in the critical area (blitz <= 1400):</h2>";
 
-foreach($risk as $r){
-  echo "<p>".$r."</p><br>";
-}
-}
-?>
 <a href = "https://lichess.org/team/team-smu" class = "btn btn-primary">Join SMU Team on Lichess</a>
 <p>Disclaimer: This list will not be used in any selections for over the board activities. It remains strictly Lichess.</p>
+
+<div>
+<center>
+&copy SMU Lichess Team <?php echo date("Y");?>
+</center>
+</div>
 </body>
 </html>
